@@ -56,22 +56,29 @@ import signal
 import subprocess
 
 pro = None
+isCompiling = False
 
 @debounce(1)
 def restart_debounched(s):
 	print("restart")
+	stop_openpilot()
+	start_openpilot()
+
+def start_openpilot():
+	print("start openpilot")
+	global pro
+	pro = subprocess.Popen('./selfdrive/manager/manager.py')
+	
+def stop_openpilot():
 	global pro
 	if pro:
 		pro.kill()
 		print("program killed")
 		pro = None
-		start_openpilot()
 
-def start_openpilot():
-	print("start openpilot")
-	global pro
-	pro = subprocess.Popen('./selfdrive/manager/manager.py',stdout=subprocess.PIPE)
-
+def recompile():
+	print("recompile...")
+	subprocess.run('scons -u -j$(nproc)',stdout=subprocess.PIPE, shell=True)
 class Handler(FileSystemEventHandler):
 
 	@staticmethod
@@ -84,7 +91,16 @@ class Handler(FileSystemEventHandler):
 			# Event is created, you can process it now
 			# print("Watchdog received created event - % s." % event.src_path)
 		if event.event_type == 'modified':
-			restart_debounched("should restart")
+			print(f"{event.src_path} modified")
+			print(event.src_path.split(".")[-1])
+			isCFile = event.src_path.split(".")[-1] == "cc"
+			isPython = event.src_path.split(".")[-1] == "py"
+			if isCFile:
+				stop_openpilot()
+				recompile()
+				start_openpilot()
+			elif isPython:
+			    restart_debounched("should restart")
 			
 if __name__ == '__main__':
 	start_openpilot()
