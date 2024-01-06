@@ -17,7 +17,6 @@
 #include "common/timing.h"
 #include "system/hardware/hw.h"
 
-const int UI_BORDER_SIZE = 30;
 const int UI_HEADER_HEIGHT = 420;
 
 const int UI_FREQ = 20; // Hz

@@ -30,7 +30,7 @@ static void drawIcon(QPainter &p, const QPoint &center, const QPixmap &img, cons
 
 OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   QVBoxLayout *main_layout  = new QVBoxLayout(this);
-  main_layout->setMargin(UI_BORDER_SIZE);
+  main_layout->setMargin(bdr_s);
   QStackedLayout *stacked_layout = new QStackedLayout;
   stacked_layout->setStackingMode(QStackedLayout::StackAll);
   main_layout->addLayout(stacked_layout);
@@ -116,7 +116,7 @@ void OnroadWindow::offroadTransition(bool offroad) {
       QObject::connect(nvg->map_settings_btn, &MapSettingsButton::clicked, m, &MapPanel::toggleMapSettings);
       nvg->map_settings_btn->setEnabled(true);
 
-      m->setFixedWidth(topWidget(this)->width() / 2 - UI_BORDER_SIZE);
+      m->setFixedWidth(topWidget(this)->width() / 2 - bdr_s);
       split->insertWidget(0, m);
 
       // hidden by default, made visible when navRoute is published
@@ -267,7 +267,7 @@ AnnotatedCameraWidget::AnnotatedCameraWidget(VisionStreamType type, QWidget* par
   pm = std::make_unique<PubMaster, const std::initializer_list<const char *>>({"uiDebug"});
 
   main_layout = new QVBoxLayout(this);
-  main_layout->setMargin(UI_BORDER_SIZE);
+  main_layout->setMargin(bdr_s);
   main_layout->setSpacing(0);
 
   experimental_btn = new ExperimentalButton(this);
@@ -533,7 +533,7 @@ void AnnotatedCameraWidget::drawDriverState(QPainter &painter, const UIState *s)
   painter.save();
 
   // base icon
-  int offset = UI_BORDER_SIZE + btn_size / 2;
+  int offset = bdr_s + btn_size / 2;
   int x = rightHandDM ? width() - offset : offset;
   int y = height() - offset;
   float opacity = dmActive ? 0.65 : 0.2;

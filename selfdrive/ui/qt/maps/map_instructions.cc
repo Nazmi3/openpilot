@@ -11,7 +11,7 @@ const QString ICON_SUFFIX = ".png";
 MapInstructions::MapInstructions(QWidget *parent) : QWidget(parent) {
   is_rhd = Params().getBool("IsRhdDetected");
   QVBoxLayout *main_layout = new QVBoxLayout(this);
-  main_layout->setContentsMargins(11, UI_BORDER_SIZE, 11, 20);
+  main_layout->setContentsMargins(11, bdr_s, 11, 20);
 
   QHBoxLayout *top_layout = new QHBoxLayout;
   top_layout->addWidget(icon_01 = new QLabel, 0, Qt::AlignTop);

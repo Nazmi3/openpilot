@@ -22,7 +22,7 @@ void MapETA::paintEvent(QPaintEvent *event) {
     p.setPen(Qt::NoPen);
     p.setBrush(QColor(0, 0, 0, 150));
     QSizeF txt_size = eta_doc.size();
-    p.drawRoundedRect((width() - txt_size.width()) / 2 - UI_BORDER_SIZE, 0, txt_size.width() + UI_BORDER_SIZE * 2, height() + 25, 25, 25);
+    p.drawRoundedRect((width() - txt_size.width()) / 2 - bdr_s, 0, txt_size.width() + bdr_s * 2, height() + 25, 25, 25);
     p.translate((width() - txt_size.width()) / 2, (height() - txt_size.height()) / 2);
     eta_doc.drawContents(&p);
   }
