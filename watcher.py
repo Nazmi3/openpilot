@@ -29,34 +29,13 @@ def debounce(wait_time):
 
     return decorator
 
-class OnMyWatch:
-	# Set the directory on watch
-	watchDirectory = "./"
-
-	def __init__(self):
-		self.observer = Observer()
-
-	def run(self):
-		event_handler = Handler()
-		self.observer.schedule(event_handler, self.watchDirectory, recursive = True)
-		self.observer.start()
-		try:
-			while True:
-				time.sleep(5)
-		except:
-			self.observer.stop()
-			print("Observer Stopped")
-
-		self.observer.join()
-
-
-
 import os
 import signal
 import subprocess
 
 pro = None
 isCompiling = False
+watcher = None
 
 @debounce(1)
 def restart_debounched(s):
@@ -67,7 +46,10 @@ def restart_debounched(s):
 def start_openpilot():
 	print("start openpilot")
 	global pro
+	global watcher
 	pro = subprocess.Popen('./selfdrive/manager/manager.py')
+	watcher = OnMyWatch()
+	watcher.run()
 	
 def stop_openpilot():
 	global pro
@@ -78,12 +60,18 @@ def stop_openpilot():
 
 def recompile():
 	print("recompile...")
+	global isCompiling
+	isCompiling = True
+	global watcher
+	watcher.stop()
 	subprocess.run('scons -u -j$(nproc)',stdout=subprocess.PIPE, shell=True)
+	isCompiling = False
 class Handler(FileSystemEventHandler):
 
 	@staticmethod
 	def on_any_event(event):
 		global pro
+		global isCompiling
 		if event.is_directory:
 			return None
 
@@ -101,11 +89,26 @@ class Handler(FileSystemEventHandler):
 				start_openpilot()
 			elif isPython:
 			    restart_debounched("should restart")
+				
+class OnMyWatch:
+	# Set the directory on watch
+	watchDirectory = "./"
+
+	def __init__(self):
+		self.observer = Observer()
+
+	def run(self):
+		print("starting watcher")
+		event_handler = Handler()
+		self.observer.schedule(event_handler, self.watchDirectory, recursive = True)
+		self.observer.start()
+		while True:
+			time.sleep(5)
+	def stop(self):
+		self.observer.stop()
 			
 if __name__ == '__main__':
 	start_openpilot()
-	watch = OnMyWatch()
-	watch.run()
 	
 
 # Importing required module
