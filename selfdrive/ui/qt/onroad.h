@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QMouseEvent>
 #include <memory>
 
 #include <QPushButton>
@@ -9,6 +10,15 @@
 #include "common/util.h"
 #include "selfdrive/ui/ui.h"
 #include "selfdrive/ui/qt/widgets/cameraview.h"
+
+#include "selfdrive/ui/qt/onroad.h"
+
+#include <cmath>
+
+#include <QDebug>
+
+#include "common/timing.h"
+
 
 
 const int btn_size = 192;
